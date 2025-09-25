@@ -2,6 +2,7 @@ package com.example.test1.dao;
 
 import java.util.HashMap;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.test1.controller.StuController;
@@ -31,6 +32,10 @@ public class UserService {
 			System.out.println(user.getName());
 			System.out.println(user.getNickName());
 		}
+		
+		resultMap.put("info", user);
+		resultMap.put("result", "success");
+//		값을 여러개 넣어서 보낼 수 있음
 		
 		return resultMap;
 	}

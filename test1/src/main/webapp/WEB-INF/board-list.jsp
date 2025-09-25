@@ -25,30 +25,22 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-		<div>
-			<input placeholder = "검색어" id="searchKey" v-model="keyword">
-			<button @click="fnInfo">검색</button>
-		</div>
-
         <div>
             <table>
                 <tr>
-                    <th>학번</th>
-                    <th>이름</th>
-                    <th>학과</th>
-                    <th>학년</th>
-                    <th>성별</th>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
                 </tr>
                 <tr v-for="item in list">
-                    <td>{{item.stuNo}}</td>
-                    <td>{{item.stuName}}</td>
-                    <td>{{item.stuDept}}</td>
-                    <td>{{item.stuGrade}}</td>
-                    <td>{{item.stuGender}}</td>
+                    <td>{{item.boardNo}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.userId}}</td>
+                    <td>{{item.cnt}}</td>
                 </tr>
             </table>
         </div>
-		
     </div>
 </body>
 </html>
@@ -58,45 +50,36 @@
         data() {
             return {
                 // 변수 - (key : value)
-				keyword : "",
                 list : []
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnList: function () {
-				//var keyword = document.getElementById("searchKey").value;
-				
                 let self = this;
-                let param = {
-					
-				};
+                let param = {};
                 $.ajax({
-                    url: "stu-list.dox",
+                    url: "",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-						console.log(data);
-                        self.list = data.info;
+
                     }
                 });
             },
-			
-			fnInfo: function () {
-				//var keyword = document.getElementById("searchKey").value;
-				
+
+            fnBoardList: function () {
                 let self = this;
-                let param = {
-					keyword : self.keyword
-				};
+                let param = {};
                 $.ajax({
-                    url: "stu-info.dox",
+                    url: "board-list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-						console.log(data);
+                        console.log(data);
+                        self.list = data.info;
                     }
                 });
             }
@@ -104,7 +87,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnList();
+            self.fnBoardList();
         }
     });
 
