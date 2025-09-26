@@ -6,6 +6,7 @@ public class Student {
 	private String stuDept;
 	private String stuGrade;
 	private String stuGender;
+	private String AVGENR;
 	
 	public String getStuNo() {
 		return stuNo;
@@ -36,5 +37,11 @@ public class Student {
 	}
 	public void setStuGender(String stuGender) {
 		this.stuGender = stuGender;
+	}
+	public String getAVGENR() {
+		return AVGENR;
+	}
+	public void setAVGENR(String aVGENR) {
+		AVGENR = aVGENR;
 	}
 }

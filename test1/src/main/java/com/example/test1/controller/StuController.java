@@ -2,6 +2,7 @@ package com.example.test1.controller;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,33 @@ public class StuController {
 	public String stuList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = stuService.getStuList(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/stu-delete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String stuDelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = stuService.removeStu(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping("/stu-view.do")
+	public String view(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception{
+//		request 객체 안에 필요한걸 담아서 jsp로 넘김
+		System.out.println(map.get("stuNo"));
+//		request.setAttribute("test", "1234");
+		request.setAttribute("stuNo", map.get("stuNo"));
+        return "/stu-view";
+    }
+	
+	@RequestMapping(value = "/stu-view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String stuView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = stuService.getStu(map);
 		
 		return new Gson().toJson(resultMap);
 	}

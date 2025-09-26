@@ -43,5 +43,26 @@ public class StuService {
 		
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> removeStu(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = stuMapper.stuDelete(map);
+		
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getStu(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		Student student = stuMapper.stuView(map);
+		
+		resultMap.put("info", student);
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	}
 
 }
