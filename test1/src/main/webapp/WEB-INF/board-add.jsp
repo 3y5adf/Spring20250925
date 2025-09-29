@@ -35,7 +35,7 @@
             <tr>
                 <th>작성자</th>
                 <td>
-                    <input type="text" v-model="userIdInput">
+                    <input type="text" v-model="sessionId" disabled>
                 </td>
             </tr>
             <tr>
@@ -58,7 +58,11 @@
                 // 변수 - (key : value)
                 titleInput : "",
                 contentsInput : "",
-                userIdInput : ""
+                userIdInput : "",
+
+                sessionId : "${sessionId}",
+                sessionName : "${sessionName}",
+                sessionStatus : "${sessionStatus}"
             };
         },
         methods: {
@@ -100,6 +104,10 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            if(self.sessionId==""){
+                alert("로그인 후, 이용해주세요.");
+                location.href="/member/login.do";
+            }
         }
     });
 

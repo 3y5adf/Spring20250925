@@ -56,7 +56,9 @@
                     <td>{{item.userId}}</td>
                     <td>{{item.cnt}}</td>
                     <td>{{item.cdate}}</td>
-                    <td><button @click="fnRemove(item.boardNo)">삭제</button></td>
+                    <td>
+                        <button @click="fnRemove(item.boardNo)" v-if=" item.userId==sessionId || sessionStatus=='A' ">삭제</button>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -71,7 +73,11 @@
                 // 변수 - (key : value)
                 list : [],
                 kind : "",
-                order : "num"
+                order : "num",
+
+                sessionId : "${sessionId}",
+                sessionName : "${sessionName}",
+                sessionStatus : "${sessionStatus}"
             };
         },
         methods: {
