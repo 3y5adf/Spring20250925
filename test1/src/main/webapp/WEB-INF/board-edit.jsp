@@ -36,7 +36,7 @@
             <tr>
                 <th>작성자</th>
                 <td>
-                    <input type="text" v-model="userIdInput">
+                    <input type="text" v-model="userIdInput" disabled>
                 </td>
             </tr>
             <tr>
