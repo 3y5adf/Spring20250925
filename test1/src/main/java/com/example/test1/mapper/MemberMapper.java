@@ -13,4 +13,6 @@ public interface MemberMapper {
 	Member memberLogin(HashMap<String, Object> map);
 	//id체크
 	Member memberIdCheck(HashMap<String, Object> map);
+	//가입
+	int memberAdd(HashMap<String, Object> map);
 }

@@ -10,6 +10,7 @@ public class Board {
 	private String kind;
 	private String cdate;
 	private String contents;
+	private int ccount;
 	
 	public int getBoardNo() {
 		return boardNo;
@@ -57,6 +58,15 @@ public class Board {
 		return contents;
 	}
 	public void setContentes(String contents) {
+		this.contents = contents;
+	}
+	public int getCcount() {
+		return ccount;
+	}
+	public void setCcount(int ccount) {
+		this.ccount = ccount;
+	}
+	public void setContents(String contents) {
 		this.contents = contents;
 	}
 

@@ -87,7 +87,7 @@
                 let param = {
                     titleInput : self.titleInput,
                     contentsInput : self.contentsInput,
-                    userIdInput : self.userIdInput
+                    userIdInput : self.sessionId
                 };
                 $.ajax({
                     url:"board-add.dox",

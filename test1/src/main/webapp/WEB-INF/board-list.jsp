@@ -21,11 +21,32 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        table a{
+            text-decoration: none;
+            color: black;
+        }
+        table a:hover{
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        .cmtCnt{
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div>
+            <select name="" id="" v-model="srchOption">
+                <option value="all">:: 전체 ::</option>
+                <option value="title">:: 제목 ::</option>
+                <option value="id">:: 작성자 ::</option>
+            </select>
+            <input type="text" v-model="keyword">
+            <button @click="fnBoardList">검색</button>
+        </div>
         <div>
             <select name="" id="" v-model="kind" @change="fnBoardList">
                 <option value="">:: 전체 ::</option>
@@ -52,7 +73,12 @@
                 </tr>
                 <tr v-for="item in list">
                     <td>{{item.boardNo}}</td>
-                    <td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
+                    <td>
+                        <a href="javascript:;" @click="fnView(item.boardNo)">
+                            {{item.title}} 
+                        </a>
+                        <span v-if="item.ccount!=0" class="cmtCnt"> [{{item.ccount}}]</span>
+                    </td>
                     <td>{{item.userId}}</td>
                     <td>{{item.cnt}}</td>
                     <td>{{item.cdate}}</td>
@@ -74,6 +100,8 @@
                 list : [],
                 kind : "",
                 order : "num",
+                srchOption : "all", // 검색 옵션 (기본 : 전체)
+                keyword : "", //검색어
 
                 sessionId : "${sessionId}",
                 sessionName : "${sessionName}",
@@ -102,7 +130,10 @@
                 let self = this;
                 let param = {
                     kind : self.kind,
-                    order : self.order
+                    order : self.order,
+
+                    srchOption : self.srchOption,
+                    keyword : self.keyword
                 };
                 $.ajax({
                     url: "board-list.dox",

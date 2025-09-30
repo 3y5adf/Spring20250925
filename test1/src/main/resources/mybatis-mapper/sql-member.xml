@@ -15,6 +15,11 @@
 		FROM TBL_USER
 		WHERE USERID = #{id}
 	</select>
+	
+	<insert id="memberAdd" parameterType="hashmap">
+		INSERT INTO TBL_USER(USERID, PASSWORD, NAME, ADDRESS, PHONE, GENDER, STATUS, CDATETIME, UDATETIME)
+		VALUES(#{id}, #{pwd}, #{name}, #{addr}, #{phone}, #{gender}, #{status}, SYSDATE, SYSDATE)
+	</insert>
 </mapper>
 
 

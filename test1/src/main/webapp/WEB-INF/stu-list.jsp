@@ -43,7 +43,10 @@
                 </tr>
                 <tr v-for="item in list">
                     <td>{{item.stuNo}}</td>
-                    <td><a href="javascript:;" @click="fnStuView(item.stuNo)">{{item.stuName}}</a></td>
+                    <td>
+                        <a href="javascript:;" @click="fnStuView(item.stuNo)">{{item.stuName}}</a>
+                        <!-- a태그를 씌우는건 마우스 커서 모양 변하게 하려고 -->
+                    </td>
                     <td>{{item.stuDept}}</td>
                     <td>{{item.stuGrade}}</td>
                     <td>{{item.stuGender}}</td>
@@ -122,7 +125,7 @@
             },
 
             fnStuView: function (stuNo){
-                pageChange("stu-view.do", {stuNo : stuNo});
+                pageChange("/stu-view.do", {stuNo : stuNo});
             }
         }, // methods
         mounted() {

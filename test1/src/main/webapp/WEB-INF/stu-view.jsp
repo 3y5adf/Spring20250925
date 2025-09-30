@@ -64,6 +64,7 @@
             return {
                 // 변수 - (key : value)
                 stuNo : "${stuNo}",
+                    // request 안에 있는 stuNo를 꺼내서 stuNo 변수에 넣음
                 info : {}
             };
         },

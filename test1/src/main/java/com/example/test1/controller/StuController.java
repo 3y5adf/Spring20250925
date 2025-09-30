@@ -58,6 +58,8 @@ public class StuController {
 	}
 	
 	@RequestMapping("/stu-view.do")
+	//stu-view.do를 호출하면서 map을 parameter로 받음
+	//request에 map에서 stuNo를 꺼내서 집어넣음 
 	public String view(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception{
 //		request 객체 안에 필요한걸 담아서 jsp로 넘김
 		System.out.println(map.get("stuNo"));

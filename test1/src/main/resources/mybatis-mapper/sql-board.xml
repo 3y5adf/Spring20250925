@@ -4,20 +4,38 @@
 
 <mapper namespace="com.example.test1.mapper.BoardMapper">
 	<select id="boardList" parameterType="hashmap" resultType="com.example.test1.model.Board">
-		SELECT B.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE
+		SELECT 
+			B.*, 
+			NVL(CMT_CNT, 0) AS CCOUNT, 
+			TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE
 		FROM TBL_BOARD B
-		WHERE 1=1
-		<!-- 1=1을 하면 언제나 참이 됨 -->
+		LEFT JOIN (
+		    SELECT BOARDNO, COUNT(*) AS CMT_CNT
+		    FROM TBL_COMMENT
+		    GROUP BY BOARDNO
+		)T ON B.BOARDNO = T.BOARDNO
+		WHERE 1=1 <!-- 1=1을 하면 언제나 참이 됨 -->
 		<if test="kind != '' and kind != null">
 			AND KIND = #{kind}
 		</if>
-		<!--<if test="boardNo != '' and boardNo != null">
-			AND BOARDNO = #{boardNo}
-		</if>-->
 		
-		<!-- order는 jsp와 연결? -->
+		<!--검색 옵션-->
+		<if test="srchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR 
+				B.USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="srchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="srchOption == 'id'">
+			AND B.USERID LIKE '%' || #{keyword} || '%'
+		</if>
+		
+		<!-- order는 jsp에 있는 변수 order -->
 		<if test="order == 'num'">
-			ORDER BY BOARDNO ASC
+			ORDER BY B.BOARDNO ASC
 		</if>
 		<if test="order == 'title'">
 			ORDER BY TITLE ASC
@@ -53,6 +71,14 @@
 			USERID = #{userIdInput}
 		WHERE BOARDNO = #{boardNo}
 	</update>
+	
+	<select id="selectCommentList" parameterType="hashmap" resultType="com.example.test1.model.Comment">
+		SELECT C.*, NVL(C.P_COMMENTNO, 0) AS PCMT, U.NICKNAME
+		FROM TBL_COMMENT C
+		INNER JOIN TBL_USER U ON C.USERID = U.USERID
+		WHERE C.BOARDNO = #{boardNo}
+		ORDER BY COMMENTNO
+	</select>
 	
 </mapper>
 
