@@ -52,6 +52,10 @@
                     <td>{{info.userId}}</td>
                 </tr>
                 <tr>
+                    <th>조회수</th>
+                    <td>{{info.cnt}}</td>
+                </tr>
+                <tr>
                     <th>내용</th>
                     <td class="contentsTd">{{info.contents}}</td>
                 </tr>
@@ -59,28 +63,30 @@
         </div>
         <a href="javascript:;" @click="fnEdit"><button>수정</button></a>
         <hr>
-        <div class="commentSpace">
-            <!-- {{commentList}} -->
+        <!-- <div class="commentSpace">
+            {{commentList}}
             <div v-for="item in commentList">
                 <div v-if="item.PCMT==0">{{item.nickName}} : {{item.contents}}</div>
                 <div v-else>ㄴ{{item.nickName}} : {{item.contents}}</div>
             </div>
-        </div>
+        </div> -->
         <table id="comment">
             <tr v-for="item in commentList">
                 <th>{{item.nickName}}</th>
                 <td>{{item.contents}}</td>
-                <td><button>삭제</button></td>
-                <td><button>수정</button></td>
+                <template v-if="item.userId == sessionId">
+                    <td><button @click="fnCmtRemove(item.commentNo)">삭제</button></td>
+                    <td><button>수정</button></td>
+                </template>
             </tr>
         </table>
         <table id="input">
             <th>댓글 입력</th>
             <td>
-                <textarea cols="50" row="5"></textarea>
+                <textarea cols="50" row="5" v-model="cmtContents"></textarea>
             </td>
             <td>
-                <button>저장</button>
+                <button @click="fnCmtAdd">저장</button>
             </td>
         </table>
     </div>
@@ -97,7 +103,13 @@
                 //request.getAttribute를 단순화시킴
                 boardNo : "${boardNo}",
                 info : {},
-                commentList : []
+                commentList : [],
+                cmtContents : "",
+                commentNo : "",
+
+                sessionId : "${sessionId}",
+                sessionName : "${sessionName}",
+                sessionStatus : "${sessionStatus}"
             };
         },
         methods: {
@@ -131,6 +143,8 @@
                         console.log(data);
                         self.info = data.info;
                         self.commentList = data.commentList;
+                        // console.log(self.info.cnt);
+                        // self.info.cnt += 1;
                     }
                 });
             },
@@ -140,6 +154,46 @@
                 // alert(self.boardNo);
                 pageChange("board-edit.do", {boardNo : self.boardNo});
                 
+            },
+
+            fnCmtAdd: function () {
+                let self = this;
+                let param = {
+                    id : self.sessionId,
+                    contents : self.cmtContents,
+                    boardNo : self.boardNo
+                };
+                $.ajax({
+                    url: "/comment/add.dox",
+                    dataType : "json",
+                    type: "POST",
+                    data: param,
+                    success: function(data) {
+                        alert(data.msg);
+                        
+                        self.cmtContents="";
+                        self.fnInfo();
+                    }
+                });
+            },
+            
+            fnCmtRemove: function (commentNo) {
+                let self = this;
+                // console.log(commentNo);
+                let param = {
+                    commentNo
+                };
+                // console.log(param);
+                $.ajax({
+                    url: "/comment/remove.dox",
+                    dataType : "json",
+                    type: "POST",
+                    data: param,
+                    success: function(data) {
+                        alert("삭제되었습니다.");
+                        self.fnInfo();
+                    }
+                });
             }
         }, // methods
         mounted() {

@@ -12,6 +12,8 @@ import com.example.test1.model.Comment;
 public interface BoardMapper {
 	//게시글 목록 호출
 	List<Board> boardList(HashMap<String, Object> map);
+	//게시글 전체 개수
+	int boardCnt(HashMap<String, Object> map);
 	//게시글 삭제
 	int deleteBoard(HashMap<String, Object> map);
 	//게시글 추가
@@ -22,4 +24,11 @@ public interface BoardMapper {
 	int updateBoard(HashMap<String, Object> map);
 	//댓글 목록 호출
 	List<Comment> selectCommentList(HashMap<String, Object> map);
+	//댓글 등록
+	int insertComment(HashMap<String, Object> map);
+	//조회수 증가
+	int updateCnt(HashMap<String, Object> map);
+	//댓글 삭제
+	int deleteComment(HashMap<String, Object> map);
+	//
 }

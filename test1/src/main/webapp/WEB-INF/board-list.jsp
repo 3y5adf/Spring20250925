@@ -33,12 +33,34 @@
             color: red;
             font-weight: bold;
         }
+        .index{
+            
+            margin-right: 5px;
+            text-decoration: none;
+            color: black;
+            
+        }
+
+        .index:hover{
+            text-decoration: underline;
+        }
+        .active {
+            color : blue;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
+
+            <select name="" id="" v-model="pageSize" @change="fnBoardList">
+                <option value="5">5개씩</option>
+                <option value="10">10개씩</option>
+                <option value="20">20개씩</option>
+            </select>
+
             <select name="" id="" v-model="srchOption">
                 <option value="all">:: 전체 ::</option>
                 <option value="title">:: 제목 ::</option>
@@ -58,6 +80,7 @@
                 <option value="num">:: 번호순 ::</option>
                 <option value="title">:: 제목순 ::</option>
                 <option value="cnt">:: 조회수 ::</option>
+                <option value="date">:: 날짜순 ::</option>
             </select>
             <button @click="fnAdd">글쓰기</button>
         </div>
@@ -81,27 +104,53 @@
                     </td>
                     <td>{{item.userId}}</td>
                     <td>{{item.cnt}}</td>
-                    <td>{{item.cdate}}</td>
+                    <td>
+                        {{item.cdate}}
+                    </td>
                     <td>
                         <button @click="fnRemove(item.boardNo)" v-if=" item.userId==sessionId || sessionStatus=='A' ">삭제</button>
                     </td>
                 </tr>
             </table>
+            <div>
+                <!-- <a class="index" href="javascript:;" @click="fnPageDown()" v-if="page!=1">◀</a> -->
+                <a class="index" href="javascript:;" @click="fnMove(-1)" v-if="page!=1">◀</a>
+                <a class="index" href="javascript:;" v-for="num in index" @click="fnPageChange(num)">
+                    <span :class="{active : page==num}" >{{num}}</span>
+                    <!-- 동적 클래스(바인드 클래스) : 특정 조건을 만족할 때만 클래스 부여 -->
+                </a>
+                <!-- <a class="index" href="javascript:;" @click="fnPageUp()" v-if="page!=index">▶</a> -->
+                <a class="index" href="javascript:;" @click="fnMove(+1)" v-if="page!=index">▶</a>
+            </div>
         </div>
+        
     </div>
 </body>
 </html>
 
 <script>
+    // let today = new Date();
+    // var year = today.getFullYear();
+    // var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    // var day = ('0' + today.getDate()).slice(-2);
+
+    // var dateString = year + '-' + month  + '-' + day;
+
+    // console.log(dateString);
+
     const app = Vue.createApp({
         data() {
             return {
                 // 변수 - (key : value)
                 list : [],
                 kind : "",
-                order : "num",
+                order : "date",
                 srchOption : "all", // 검색 옵션 (기본 : 전체)
                 keyword : "", //검색어
+
+                pageSize : 5, // 한 페이지에 출력할 개수
+                page : 1, //현재 페이지
+                index : 0, // 최대 페이지 값
 
                 sessionId : "${sessionId}",
                 sessionName : "${sessionName}",
@@ -133,7 +182,10 @@
                     order : self.order,
 
                     srchOption : self.srchOption,
-                    keyword : self.keyword
+                    keyword : self.keyword,
+
+                    pageSize : self.pageSize,
+                    page : (self.page-1) * self.pageSize
                 };
                 $.ajax({
                     url: "board-list.dox",
@@ -145,6 +197,7 @@
                         self.list = data.info;
                         // console.log(self.kind);
                         // console.log(self.order);
+                        self.index = Math.ceil(data.cnt / self.pageSize);
                     }
                 });
             },
@@ -176,6 +229,45 @@
                 // pageChange 를 외부 참조?
                 // {} 안에 여러 값을 넣어서 한번에 이동 가능
                 // ex) {boardNo : boardNo, qqq : "1234", hhh : "asdf"}
+            },
+
+            fnPageChange:function (num) {
+                let self= this;
+                // console.log(num);
+
+                self.page = num;
+                self.fnBoardList();
+            },
+
+            fnPageUp:function (){
+                let self=this;
+                // console.log(self.page);
+                // console.log(self.index);
+                
+                if(self.page == self.index){
+                    alert("마지막 페이지입니다.");
+                    return;
+                }
+                self.page= self.page+1;
+
+                self.fnBoardList();
+            },
+
+            fnPageDown : function () {
+                let self = this;
+
+                if(self.page == 1){
+                    alert("첫 페이지입니다.");
+                    return;
+                }
+                self.page= self.page-1;
+
+                self.fnBoardList();
+            },
+            fnMove:function(num){
+                let self=this;
+                self.page += num;
+                self.fnBoardList();
             }
         }, // methods
         mounted() {

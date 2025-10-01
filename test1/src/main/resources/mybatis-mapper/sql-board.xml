@@ -7,7 +7,7 @@
 		SELECT 
 			B.*, 
 			NVL(CMT_CNT, 0) AS CCOUNT, 
-			TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE
+			DECODE( TO_CHAR(CDATETIME, 'YYYY-MM-DD'), TO_CHAR(SYSDATE, 'YYYY-MM-DD'), TO_CHAR(CDATETIME,'HH24:MI:SS'), TO_CHAR(CDATETIME, 'YYYY-MM-DD') ) AS CDATE
 		FROM TBL_BOARD B
 		LEFT JOIN (
 		    SELECT BOARDNO, COUNT(*) AS CMT_CNT
@@ -34,6 +34,9 @@
 		</if>
 		
 		<!-- order는 jsp에 있는 변수 order -->
+		<if test="order == 'date'">
+			ORDER BY CDATETIME DESC
+		</if>
 		<if test="order == 'num'">
 			ORDER BY B.BOARDNO ASC
 		</if>
@@ -43,8 +46,33 @@
 		<if test="order == 'cnt'">
 			ORDER BY CNT DESC
 		</if>
-		
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
 	</select>	
+	
+	<select id="boardCnt" parameterType="hashmap" resultType="int">
+		SELECT 
+			COUNT(*) 
+		FROM TBL_BOARD B
+		WHERE 1=1 <!-- 1=1을 하면 언제나 참이 됨 -->
+		<if test="kind != '' and kind != null">
+			AND KIND = #{kind}
+		</if>
+		
+		<!--검색 옵션-->
+		<if test="srchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR 
+				B.USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="srchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="srchOption == 'id'">
+			AND B.USERID LIKE '%' || #{keyword} || '%'
+		</if>
+		
+	</select>
 		
 	<delete id="deleteBoard" parameterType="hashmap">
 		DELETE
@@ -77,8 +105,27 @@
 		FROM TBL_COMMENT C
 		INNER JOIN TBL_USER U ON C.USERID = U.USERID
 		WHERE C.BOARDNO = #{boardNo}
-		ORDER BY COMMENTNO
+		ORDER BY C.CDATETIME ASC
 	</select>
+	
+	<insert id="insertComment" parameterType="hashmap">
+		INSERT INTO TBL_COMMENT
+		VALUES(COMMENT_SEQ.NEXTVAL, #{boardNo}, #{contents}, #{id}, 0, NULL, SYSDATE, SYSDATE)
+	</insert>
+	
+	<update id="updateCnt" parameterType="hashmap"> 
+		UPDATE TBL_BOARD
+		SET 
+			CNT = CNT+1
+		WHERE BOARDNO = #{boardNo}
+		<!-- 이 방식은 새로고침이나 댓글 달 때마다 조회수가 계속 상승 -->
+	</update>
+	
+	<delete id="deleteComment" parameterType="hashmap">
+		DELETE
+		FROM TBL_COMMENT
+		WHERE COMMENTNO = #{commentNo}
+	</delete>
 	
 </mapper>
 

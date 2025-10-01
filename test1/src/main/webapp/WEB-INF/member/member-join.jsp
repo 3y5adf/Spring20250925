@@ -310,12 +310,14 @@
                     alert("정상적인 전화번호를 입력해주세요.");
                     return;
                 }
+
                 //문자 인증이 완료되지 않으면
                 //회원가입 불가능 (안내문구 출력)
                 // if(!self.joinFlg){
                 //     alert("문자 인증을 진행해주세요.");
                 //     return;
                 // }
+                
                 let param={
                     id : self.id,
                     pwd : self.pwd,
