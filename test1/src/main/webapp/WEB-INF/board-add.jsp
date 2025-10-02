@@ -7,6 +7,9 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
+    <!-- <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script> -->
+
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -19,6 +22,11 @@
         }
         tr:nth-child(even){
             background-color: azure;
+        }
+        #editor{
+            width: 500px;
+            height: 200px;
+            background-color: white;
         }
     </style>
 </head>
@@ -35,13 +43,23 @@
             <tr>
                 <th>작성자</th>
                 <td>
-                    <input type="text" v-model="sessionId" disabled>
+                    <input type="text" v-model="userIdInput" disabled>
+                </td>
+            </tr>
+            <tr>
+                <th>파일 첨부</th>
+                <td>
+                    <input type="file" id="file1" name="file1" accept=".jpg, .png"> 
+                    <!-- 속성에 multiple 넣으면 파일 여러개 첨부 가능 -->
+                    <!-- accept=".jpg, .png ..." 속성을 써서 첨부받을 파일의 타입 지정 가능 -->
                 </td>
             </tr>
             <tr>
                 <th>내용</th>
                 <td>
-                    <textarea name="" id="" v-model="contentsInput"></textarea>
+                    <!-- <div id="editor"> -->
+                        <textarea name="" id="" v-model="contentsInput" cols="50" rows="20"></textarea>
+                    <!-- </div> -->
                 </td>
             </tr>
         </table>
@@ -58,7 +76,7 @@
                 // 변수 - (key : value)
                 titleInput : "",
                 contentsInput : "",
-                userIdInput : "",
+                userIdInput : "${sessionId}",
 
                 sessionId : "${sessionId}",
                 sessionName : "${sessionName}",
@@ -96,9 +114,28 @@
                     data: param,
                     success: function (data){
                         alert("작성되었습니다.");
-                        location.href="/board-list.do";
+                        console.log(data.boardNo);
+                        var form = new FormData();
+                        form.append( "file1",  $("#file1")[0].files[0] ); // id가 file1인 것에 첨부된 파일, 1개만 첨부할 것이기 때문에 [0]
+                        form.append( "boardNo",  data.boardNo); // 임시 pk=> boardNo 값을 가져왔으니, data.boardNo를 boardNo로
+                        self.upload(form);
+                        // location.href="/board-list.do";
                     }
                 })
+            },
+
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/fileUpload.dox", 
+                    type : "POST", 
+                    processData : false, 
+                    contentType : false, 
+                    data : form, 
+                    success:function(data) { 
+                        console.log(data);
+                    }	           
+                });
             }
         }, // methods
         mounted() {
@@ -108,6 +145,25 @@
                 alert("로그인 후, 이용해주세요.");
                 location.href="/member/login.do";
             }
+
+            // Quill 에디터 초기화
+            // var quill = new Quill('#editor', {
+            //     theme: 'snow',
+            //     modules: {
+            //         toolbar: [
+            //             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            //             ['bold', 'italic', 'underline'],
+            //             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            //             ['link', 'image'],
+            //             ['clean']
+            //         ]
+            //     }
+            // });
+
+            // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
+            // quill.on('text-change', function() {
+            //     self.contents = quill.root.innerHTML;
+            // });
         }
     });
 

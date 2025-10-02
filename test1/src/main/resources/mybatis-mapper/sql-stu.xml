@@ -28,6 +28,23 @@
 		WHERE S.STU_NO = #{stuNo}
 		GROUP BY S.STU_NO, STU_NAME, STU_DEPT
 	</select>
+	
+	<delete id="stuDeleteList" parameterType="hashmap">
+		DELETE
+		FROM STUDENT
+		WHERE STU_NO IN
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=","> 
+		<!--sql에서의 반복은 foreach 사용, 반복하고자 하는 것은 collection에 넣음, 꺼낼 때의 이름은 item으로 설정, index는 -->
+		<!--open과 close가 없으면 직업 괄호를 쳐주어야 함, separator는 구분자, 값이 하나 나올때마다 뒤에 구분자를 붙여줌 -->
+			#{item}
+			
+		</foreach>
+	</delete>
+	
+	<!--<select id="stuNoAll" parameterType="hashmap" resultType="com.example.test1.model.Student">
+		SELECT STU_NO
+		FROM STUDENT
+	</select>-->
 </mapper>
 
 

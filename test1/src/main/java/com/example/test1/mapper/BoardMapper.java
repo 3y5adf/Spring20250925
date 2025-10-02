@@ -16,6 +16,8 @@ public interface BoardMapper {
 	int boardCnt(HashMap<String, Object> map);
 	//게시글 삭제
 	int deleteBoard(HashMap<String, Object> map);
+	//게시글 여러개 한번에 삭제
+	int deleteBoardList(HashMap<String, Object> map);
 	//게시글 추가
 	int insertBoard(HashMap<String, Object> map);
 	//게시글 상세보기
@@ -30,5 +32,8 @@ public interface BoardMapper {
 	int updateCnt(HashMap<String, Object> map);
 	//댓글 삭제
 	int deleteComment(HashMap<String, Object> map);
-	//
+	//첨부파일(이미지) 업로드
+	int insertBoardImg(HashMap<String, Object> map);
+	//첨부 파일 목록
+	List<Board> selectFileList(HashMap<String, Object> map);
 }

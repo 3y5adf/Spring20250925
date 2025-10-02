@@ -34,6 +34,7 @@
         <div>
             <table>
                 <tr>
+                    <th><input type="checkbox" value="stuNoList" @click="fnAllCheck()"></th>
                     <th>학번</th>
                     <th>이름</th>
                     <th>학과</th>
@@ -42,6 +43,7 @@
                     <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
+                    <td><input type="checkbox" :value="item.stuNo" v-model="selectItem"></td>
                     <td>{{item.stuNo}}</td>
                     <td>
                         <a href="javascript:;" @click="fnStuView(item.stuNo)">{{item.stuName}}</a>
@@ -54,6 +56,9 @@
                 </tr>
             </table>
         </div>
+        <div>
+            <button @click="fnAllRemove">삭제</button>
+        </div>
 		
     </div>
 </body>
@@ -65,7 +70,11 @@
             return {
                 // 변수 - (key : value)
 				keyword : "",
-                list : []
+                list : [],
+                selectItem : [],
+                stuNoList : [],
+
+                selectFlg : false
             };
         },
         methods: {
@@ -84,7 +93,8 @@
                     data: param,
                     success: function (data) {
 						console.log(data);
-                        self.list = data.info;
+                        self.list = data.list;
+                        self.stuNoList = data.stuNo;
                     }
                 });
             },
@@ -126,6 +136,41 @@
 
             fnStuView: function (stuNo){
                 pageChange("/stu-view.do", {stuNo : stuNo});
+            },
+
+            fnAllRemove : function () {
+                let self =this;
+                // console.log(self.selectItem);
+
+                var fList = JSON.stringify(self.selectItem);
+                var param = {selectItem : fList};
+
+                $.ajax({
+                    url: "/stu/deleteList.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert("삭제되었습니다!");
+                        self.fnList();
+                    }
+                });
+            },
+
+            fnAllCheck : function () {
+                let self = this;
+                self.selectFlg = !self.selectFlg;
+
+                if(self.selectFlg){
+                    self.selectItem = [];
+                    for(let i=0; i<self.list.length; i++){
+                        self.selectItem.push(self.list[i].stuNo);
+                    }    
+                } else {
+                    self.selectItem = [];
+                }
+
+                
             }
         }, // methods
         mounted() {

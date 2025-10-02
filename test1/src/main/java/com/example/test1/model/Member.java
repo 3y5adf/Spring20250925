@@ -10,4 +10,8 @@ public class Member {
 	private String birth;
 	private String nickName;
 	private String status;
+
+	private String fileNO;
+	private String filePath;
+	private String fileName;
 }

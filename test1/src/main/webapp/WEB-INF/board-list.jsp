@@ -87,6 +87,7 @@
         <div>
             <table>
                 <tr>
+                    <th><input type="checkbox" v-model="checkNoList" @click="fnCheckAll"></th>
                     <th>번호</th>
                     <th>제목</th>
                     <th>작성자</th>
@@ -95,6 +96,7 @@
                     <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
+                    <td><input type="checkbox" :value="item.boardNo" v-model="checkNo"></td>
                     <td>{{item.boardNo}}</td>
                     <td>
                         <a href="javascript:;" @click="fnView(item.boardNo)">
@@ -112,6 +114,9 @@
                     </td>
                 </tr>
             </table>
+
+            <button @click="fnRemoveList">삭제</button>
+
             <div>
                 <!-- <a class="index" href="javascript:;" @click="fnPageDown()" v-if="page!=1">◀</a> -->
                 <a class="index" href="javascript:;" @click="fnMove(-1)" v-if="page!=1">◀</a>
@@ -147,6 +152,11 @@
                 order : "date",
                 srchOption : "all", // 검색 옵션 (기본 : 전체)
                 keyword : "", //검색어
+
+                checkNoList : "",
+                checkNo : [],
+
+                checkFlg : false,
 
                 pageSize : 5, // 한 페이지에 출력할 개수
                 page : 1, //현재 페이지
@@ -268,6 +278,40 @@
                 let self=this;
                 self.page += num;
                 self.fnBoardList();
+            },
+
+            fnCheckAll:function () {
+                let self=this;
+                self.checkFlg = !self.checkFlg;
+                if(self.checkFlg){
+                    self.checkNo = [];
+                    for(let i = 0; i<self.list.length; i++){
+                        self.checkNo.push(self.list[i].boardNo);
+                    }
+                } else {
+                    self.checkNo = [];
+                }
+                
+            },
+
+            fnRemoveList:function(){
+                let self = this;
+                console.log(self.checkNo);
+
+                var fList = JSON.stringify(self.checkNo);
+                var param = {checkNo : fList};
+
+                $.ajax({
+                    url: "/board/deleteList.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert("삭제되었습니다!");
+                        self.fnBoardList();
+                    }
+                });
+
             }
         }, // methods
         mounted() {

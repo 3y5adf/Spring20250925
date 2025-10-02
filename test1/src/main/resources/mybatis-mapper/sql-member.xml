@@ -20,6 +20,12 @@
 		INSERT INTO TBL_USER(USERID, PASSWORD, NAME, ADDRESS, PHONE, GENDER, STATUS, CDATETIME, UDATETIME)
 		VALUES(#{id}, #{pwd}, #{name}, #{addr}, #{phone}, #{gender}, #{status}, SYSDATE, SYSDATE)
 	</insert>
+	
+	<select id="memberProfileList" parameterType="hashmap" resultType="com.example.test1.model.User">
+		SELECT *
+		FROM TBL_USER_FILE
+		WHERE USERID = #{userId}
+	</select>
 </mapper>
 
 

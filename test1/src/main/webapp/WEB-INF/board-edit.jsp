@@ -7,6 +7,7 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -42,7 +43,7 @@
             <tr>
                 <th>내용</th>
                 <td>
-                    <textarea name="" id="" v-model="contentsInput"></textarea>
+                    <textarea name="" id="" v-model="contentsInput" cols="50" rows="20"></textarea>
                 </td>
             </tr>
         </table>

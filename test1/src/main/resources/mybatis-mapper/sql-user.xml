@@ -8,6 +8,12 @@
 		FROM TBL_USER
 		WHERE USERID = #{userId} AND PASSWORD = #{pwd}
 	</select>
+	
+	<!--<select id="userProfileList" parameterType="hashmap" resultType="com.example.test1.model.User">
+		SELECT *
+		FROM TBL_USER_FILE
+		WHERE USERID = #{userId}
+	</select>-->
 </mapper>
 
 

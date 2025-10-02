@@ -38,7 +38,10 @@ public class StuService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<Student> list = stuMapper.stuList(map);
 		
-		resultMap.put("info", list);
+//		List<Student> stuNoList = stuMapper.stuNoAll(map);
+//		resultMap.put("stuNO", stuNoList);
+		
+		resultMap.put("list", list);
 		resultMap.put("result", "success");
 		
 		return resultMap;
@@ -48,6 +51,16 @@ public class StuService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = stuMapper.stuDelete(map);
+		
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> removeListStu(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = stuMapper.stuDeleteList(map);
 		
 		resultMap.put("result", "success");
 		

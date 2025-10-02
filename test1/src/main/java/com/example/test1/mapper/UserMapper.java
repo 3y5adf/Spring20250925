@@ -1,7 +1,7 @@
 package com.example.test1.mapper;
 
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,5 +14,6 @@ public interface UserMapper {
 //	자바가 아니라 XML파일에서 찾음
 //	XML과 MAPPER는 1대1 매칭이 되어야 함
 	
+	List<User> userProfileList(HashMap<String, Object> map);
 	
 }

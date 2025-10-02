@@ -57,7 +57,11 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td class="contentsTd">{{info.contents}}</td>
+                    <td class="contentsTd">
+                        <img v-for="item in fileList" :src="item.filePath">
+                        <br>
+                        {{info.contents}}
+                    </td>
                 </tr>
             </table>
         </div>
@@ -106,6 +110,7 @@
                 commentList : [],
                 cmtContents : "",
                 commentNo : "",
+                fileList : [],
 
                 sessionId : "${sessionId}",
                 sessionName : "${sessionName}",
@@ -143,6 +148,7 @@
                         console.log(data);
                         self.info = data.info;
                         self.commentList = data.commentList;
+                        self.fileList = data.fileList;
                         // console.log(self.info.cnt);
                         // self.info.cnt += 1;
                     }

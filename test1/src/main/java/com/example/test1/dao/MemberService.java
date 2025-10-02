@@ -1,6 +1,7 @@
 package com.example.test1.dao;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -73,13 +74,17 @@ public class MemberService {
 	public HashMap<String, Object> memberInsert(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = memberMapper .memberAdd(map);
+		List<Member> profileList = memberMapper.memberProfileList(map);
 		
 		if(cnt<1) {
 			resultMap.put("result", "fail");
 		} else {
 			resultMap.put("result", "success");
+			resultMap.put("profileList", profileList);
 		}
 		
 		return resultMap;
 	}
+	
+	
 }

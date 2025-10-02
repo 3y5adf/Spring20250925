@@ -48,10 +48,11 @@
             <!-- <span v-if="pwdFlg">○</span>
             <span v-else></span> -->
         </div>
-        <!-- <div v-if="pwd.length>0 && pwd2.length>0">
-            <template v-if="pwd===pwd2"><div style="color: rgb(47, 255, 82);">비밀번호가 같습니다.</div></template>
-            <template v-else><div style="color: red;">비밀번호가 틀립니다.</div></template>
-        </div> -->
+        
+        <div>
+            프로필 이미지 :
+            <input type="file" id="file1" name="file1">
+        </div>
 
         <div>
             이름 : <input type="text" v-model="name">                                                       
@@ -341,13 +342,33 @@
                     success: function (data) {
                         if(data.result == "success"){
                             alert("가입되었습니다.");
-                            location.href="/member/login.do";
+
+                            var form = new FormData();
+                            form.append( "file1",  $("#file1")[0].files[0] );
+                            form.append( "userId",  data.userId); // 임시 pk
+                            self.upload(form);  
+
+                            // location.href="/member/login.do";
                         } else {
                             alert("오류가 발생했습니다.");
                         }
                     }
                 });
                 
+            },
+
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/fileUpload.dox", 
+                    type : "POST", 
+                    processData : false, 
+                    contentType : false, 
+                    data : form, 
+                    success:function(data) { 
+                        console.log(data);
+                    }	           
+                });
             }
         }, // methods
         mounted() {

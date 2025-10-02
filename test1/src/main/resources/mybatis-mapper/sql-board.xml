@@ -80,7 +80,22 @@
 		WHERE BOARDNO = #{boardNo}
 	</delete>
 	
-	<insert id="insertBoard" parameterType="hashmap">
+	<delete id="deleteBoardList" parameterType="hashmap">
+		DELETE
+		FROM TBL_BOARD
+		WHERE BOARDNO IN
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=","> 
+		<!--sql에서의 반복은 foreach 사용, 반복하고자 하는 것은 collection에 넣음, 꺼낼 때의 이름은 item으로 설정, index는 -->
+		<!--open과 close가 없으면 직업 괄호를 쳐주어야 함, separator는 구분자, 값이 하나 나올때마다 뒤에 구분자를 붙여줌 -->
+			#{item}
+			
+		</foreach>
+	</delete>
+	
+	<insert id="insertBoard" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BOARDNO" keyProperty="boardNo">
+	<!-- useGeneratedKeys=>key값 생성해서 리턴, keyColumn=>리턴받고자하는 컬럼 이름, keyProperty=>리턴받을 때 쓸 이름 -->
+	<!-- 리턴한 mapper 안의 map에 boardNo를 담아서 리턴 -->
+	<!-- select 처럼 resultType 사용 불가 -->
 		INSERT INTO TBL_BOARD
 		VALUES(B_SEQ.NEXTVAL, #{titleInput}, #{contentsInput}, #{userIdInput}, 0, 0, 2, SYSDATE, SYSDATE)
 	</insert>
@@ -126,6 +141,17 @@
 		FROM TBL_COMMENT
 		WHERE COMMENTNO = #{commentNo}
 	</delete>
+	
+	<insert id="insertBoardImg" parameterType="hashmap">
+		INSERT INTO TBL_BOARD_FILE
+		VALUES(FILE_SEQ.NEXTVAL, #{boardNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
+	</insert>
+	
+	<select id="selectFileList" parameterType="hashmap" resultType="com.example.test1.model.Board">
+		SELECT *
+		FROM TBL_BOARD_FILE
+		WHERE BOARDNO = #{boardNo}
+	</select>
 	
 </mapper>
 
