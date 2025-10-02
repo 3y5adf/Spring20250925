@@ -84,6 +84,7 @@ public class MemberController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	//잘 안됐음.
 //	@RequestMapping("/fileUpload.dox")
 //	public String result(@RequestParam("file1") MultipartFile multi, @RequestParam("idx") int idx, HttpServletRequest request,HttpServletResponse response, Model model)
 //	{
