@@ -47,6 +47,29 @@ public class MemberController {
     return "/jusoPopup";
 	      
 	}
+	
+	@RequestMapping("/mgr/member/list.do") 
+    public String mgr(Model model) throws Exception{
+
+    return "/mgr/member-list";
+	      
+	}
+	
+	@RequestMapping("/mgr/member/view.do") 
+    public String view(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception{
+		request.setAttribute("userId", map.get("userId"));
+		return "/mgr/member-view";
+	      
+	}
+	
+	@RequestMapping(value = "/mgr/member/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String memberMgrList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.mgrMemberList(map);
+		
+		return new Gson().toJson(resultMap);
+	}
 
 	@RequestMapping(value = "/member/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -80,6 +103,15 @@ public class MemberController {
 	public String memberAdd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = memberService.memberInsert(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/mgr/member/release.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String memberClear(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.memberRelease(map);
 		
 		return new Gson().toJson(resultMap);
 	}
