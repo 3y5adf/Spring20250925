@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.test1.mapper.ProductMapper">
+	<select id="selectProductList" parameterType="hashmap" resultType="com.example.test1.model.Product">
+		SELECT *
+		FROM TBL_FOOD TF
+		INNER JOIN TBL_FOOD_IMG TFI
+		ON TF.FOOD_NO = TFI.FOOD_NO
+		WHERE (FOOD_INFO LIKE '%' || #{keyword} || '%' OR FOOD_NAME LIKE '%' || #{keyword} || '%')
+		
+		<if test="menuNo != null and menuNo != ''">
+			AND TF.MENU_NO = #{menuNo}
+		</if>
+		<if test="menuPart != null and menuPart != ''">
+			AND TF.MENU_PART = #{menuPart}
+		</if>
+		
+	</select>
+	
+	
+	<select id="selectMenuList" parameterType="hashmap" resultType="com.example.test1.model.Menu">
+		<!--SELECT *
+		FROM TBL_MENU	-->	
+		
+		SELECT M.*, NVL(CNT,0) AS CNT
+		FROM TBL_MENU M
+		LEFT JOIN (
+		    SELECT MENU_PART, COUNT(MENU_PART) AS CNT
+		    FROM TBL_MENU
+		    GROUP BY MENU_PART    
+		)T ON M.MENU_NO = T.MENU_PART
+	</select>
+	
+	<select id="selectMenuAddList" parameterType="hashmap" resultType="com.example.test1.model.Menu">
+		SELECT *
+		FROM TBL_MENU
+		WHERE DEPTH = 1
+	</select>
+	
+	<!--<select id="selectProductSrch" parameterType="hashmap" resultType="com.example.test1.model.Product">
+		SELECT *
+		FROM TBL_FOOD TF
+		INNER JOIN TBL_FOOD_IMG TFI
+		ON TF.FOOD_NO = TFI.FOOD_NO
+		WHERE FOOD_INFO LIKE '%' || #{keyword} || '%' OR FOOD_NAME LIKE '%' || #{keyword} || '%'
+	</select>-->
+	
+</mapper>
+
+
+
+
