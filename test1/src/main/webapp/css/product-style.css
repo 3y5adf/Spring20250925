@@ -126,6 +126,11 @@ nav ul li a:hover {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.product-item:hover {
+	cursor: pointer;
+	background-color: beige;
+}
+
 .product-item img {
 	width: 100%;
 	height: 220px;

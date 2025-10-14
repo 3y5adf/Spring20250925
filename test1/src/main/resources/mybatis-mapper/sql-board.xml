@@ -92,7 +92,11 @@
 		</foreach>
 	</delete>
 	
-	<insert id="insertBoard" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BOARDNO" keyProperty="boardNo">
+	<insert id="insertBoard" 
+			parameterType="hashmap" 
+			useGeneratedKeys="true" 
+			keyColumn="BOARDNO" 
+			keyProperty="boardNo">
 	<!-- useGeneratedKeys=>key값 생성해서 리턴, keyColumn=>리턴받고자하는 컬럼 이름, keyProperty=>리턴받을 때 쓸 이름 -->
 	<!-- 리턴한 mapper 안의 map에 boardNo를 담아서 리턴 -->
 	<!-- select 처럼 resultType 사용 불가 -->

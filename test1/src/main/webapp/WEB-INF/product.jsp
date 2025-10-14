@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>쇼핑몰 헤더</title>
     <link rel="stylesheet" href="/css/product-style.css">
+    <script src="/js/page-change.js"></script>
 </head>
 
 <body>
@@ -63,8 +64,8 @@
                 </ul>
             </nav>
             <div class="search-bar"  >
-                <input type="text" placeholder="상품을 검색하세요..." v-model="keyword" @keyup.enter="fnProductList">
-                <button @click=fnProductList >검색</button>
+                <input type="text" placeholder="상품을 검색하세요..." v-model="keyword" @keyup.enter="fnProductList('','')">
+                <button @click="fnProductList('','')" >검색</button>
             </div>
             <div class="login-btn">
                 <button>로그인</button>
@@ -99,7 +100,7 @@
 
         <main>
             <section class="product-list">
-                <div class="product-item" v-for="item in productList">
+                <div class="product-item" v-for="item in productList" @click="fnView(item.menuNo)">
                     <img :src="item.filePath" alt="item.fileName">
                     <h3>{{item.foodName}}</h3>
                     <p>{{item.foodInfo}}</p>
@@ -155,11 +156,17 @@
                         self.menuList = data.menuList;
                     }
                 });
+            },
+
+            fnView : function (menuNo) {
+                var self = this;
+                // alert(menuNo);
+                pageChange("/product/view.do", {menuNo : menuNo});
             }
         },
         mounted() {
             var self = this;
-            self.fnProductList();
+            self.fnProductList('','');
         }
     });
     app.mount('#app');

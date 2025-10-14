@@ -31,6 +31,9 @@
 		    FROM TBL_MENU
 		    GROUP BY MENU_PART    
 		)T ON M.MENU_NO = T.MENU_PART
+		<if test="depth != null and depth != ''">
+			WHERE DEPTH = #{depth}
+		</if>
 	</select>
 	
 	<select id="selectMenuAddList" parameterType="hashmap" resultType="com.example.test1.model.Menu">
@@ -46,6 +49,28 @@
 		ON TF.FOOD_NO = TFI.FOOD_NO
 		WHERE FOOD_INFO LIKE '%' || #{keyword} || '%' OR FOOD_NAME LIKE '%' || #{keyword} || '%'
 	</select>-->
+	
+	<insert id="insertFood" 
+			parameterType="hashmap"
+			useGeneratedKeys="true" 
+			keyColumn="FOOD_NO" 
+			keyProperty="foodNo">
+		INSERT INTO TBL_FOOD
+		VALUES(FOOD_SEQ.NEXTVAL, #{foodName}, #{price}, '', #{foodInfo}, 'Y', #{menuNo}, #{menuPart})
+	</insert>
+	
+	<insert id="insertFoodImg" parameterType="hashmap">
+		INSERT INTO TBL_FOOD_IMG
+		VALUES(FOODFILE_SEQ.NEXTVAL, #{foodNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext}, 'Y')
+	</insert>
+	
+	<select id="selectFoodInfo" parameterType="hashmap" resultType="com.example.test1.model.Product">
+		SELECT *
+		FROM TBL_FOOD TF
+		INNER JOIN TBL_FOOD_IMG TFI
+		ON TF.FOOD_NO = TFI.FOOD_NO
+		WHERE MENU_NO = #{menuNo}
+	</select>
 	
 </mapper>
 
