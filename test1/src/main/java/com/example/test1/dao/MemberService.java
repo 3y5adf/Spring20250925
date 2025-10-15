@@ -201,13 +201,14 @@ public class MemberService {
 //		cnt 전에 해시화를 하고, map에 넣어줘야 함
 		int cnt = memberMapper .memberAdd(map);
 		
-		List<Member> profileList = memberMapper.memberProfileList(map);
+//		이미지 업로드용
+//		List<Member> profileList = memberMapper.memberProfileList(map);
 		
 		if(cnt<1) {
 			resultMap.put("result", "fail");
 		} else {
 			resultMap.put("result", "success");
-			resultMap.put("profileList", profileList);
+//			resultMap.put("profileList", profileList);
 		}
 		
 		return resultMap;

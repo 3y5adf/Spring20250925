@@ -357,7 +357,7 @@
                             // form.append( "userId",  data.userId); // 임시 pk
                             // self.upload(form);  
                             
-                            // location.href="/member/login.do";
+                            location.href="/member/login.do";
                         } else {
                             alert("오류가 발생했습니다.");
                         }
