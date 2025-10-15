@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.test1.mapper.MemberMapper;
@@ -17,6 +18,9 @@ public class MemberService {
 	MemberMapper memberMapper;
 	
 	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
 	HttpSession session;
 	//세션 관리는 이걸 필수로 써야 함
 	
@@ -24,6 +28,9 @@ public class MemberService {
 	public HashMap<String, Object> login(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		Member member = memberMapper .memberLogin(map);
+		
+		
+		
 		String message = ""; // 로그인 성공 실패 여부 메세지
 		String result = "";//로그인 성공 실패 여부
 		
@@ -43,32 +50,39 @@ public class MemberService {
 		
 //		String message = member != null ? "로그인 성공!" : "로그인 실패!";
 //		String result = member != null ? "success" : "fail";
-		
-		if(member != null) { //아이디&비밀번호 맞을 경우
-//			System.out.println(member.getCnt());
+/*----------------------------------------------------------------------------------*/		
+		/* 해시 적용 후 버전 */
+		if(member != null) {
+			// 아이디가 존재, 비밀번호 비교 전
+			// 사용자가 보낸 비밀번호 map 에서 꺼낸 후 해시화한 값과, member 객체 안에 있는 password와 비교
+			Boolean loginFlg = passwordEncoder.matches((String) map.get("pwd"), member.getPassword());
+			//첫번째 파라미터 값을 해시화, 2번째 파라미터값과 비교
+//			System.out.println(loginFlg);
 			
-			if(member.getCnt()>=5) {
-				message = "로그인 불가(비밀번호를 5회 이상 잘못 입력하셨습니다.)";
-				result = "fail";
-			} else {
-				// 로그인 성공 시, cnt 값 0으로 초기화
-				int cntReset = memberMapper.loginCntReset(map);
-				message= "로그인 성공!";
-				result = "success";
-				session.setAttribute("sessionId", member.getUserId());
-				session.setAttribute("sessionName", member.getName());
-				session.setAttribute("sessionStatus", member.getStatus());
-				if(member.getStatus().equals("A")) {
-					resultMap.put("url", "/mgr/member/list.do");
-				} else {
-					resultMap.put("url", "/main.do");
+			if(loginFlg) {
+				//비밀번호 정상 입력 시
+				if(member.getCnt() >= 5) {
+					//비밀번호는 정상입력 했지만, 이전에 5회이상 틀린 경우
+					message = "로그인 불가(비밀번호를 5회 이상 잘못 입력하셨습니다.)";
+					result = "fail";
+				} else { 
+					// 로그인 성공 시, cnt 값 0으로 초기화
+					int cntReset = memberMapper.loginCntReset(map);
+					message= "로그인 성공!";
+					result = "success";
+					session.setAttribute("sessionId", member.getUserId());
+					session.setAttribute("sessionName", member.getName());
+					session.setAttribute("sessionStatus", member.getStatus());
+					if(member.getStatus().equals("A")) {
+						resultMap.put("url", "/mgr/member/list.do");
+					} else {
+						resultMap.put("url", "/main.do");
+					}
 				}
-			}
-			
-			
-		} else { //아이디&비밀번호 틀릴 경우
-			Member loginIdCheck = memberMapper .memberIdCheck(map);
-			if(loginIdCheck != null) { //아이디는 맞을 경우
+				
+			} else {
+				//아이디는 맞지만 비밀번호가 다른 경우
+				Member loginIdCheck = memberMapper .memberIdCheck(map);
 				//로그인 실패 시, cnt값 증가
 				int cntUp = memberMapper.loginCntUp(map);
 //				System.out.println(loginIdCheck.getCnt());
@@ -80,12 +94,59 @@ public class MemberService {
 					message = "비밀번호를 확인해주세요.";
 					result = "fail";
 				}
-				
-			} else { //아이디가 틀릴 경우
-				message = "아이디가 존재하지 않습니다.";
-				result = "fail";
 			}
+			
+		} else {
+			// 아이디가 없음
+			message = "아이디가 존재하지 않습니다.";
+			result = "fail";
 		}
+		
+		
+/*----------------------------------------------------------------------------------*/		
+		/* 해시 적용 전 버전 */
+//		if(member != null) { //아이디&비밀번호 맞을 경우
+//			
+//			if(member.getCnt()>=5) {
+//				message = "로그인 불가(비밀번호를 5회 이상 잘못 입력하셨습니다.)";
+//				result = "fail";
+//			} else {
+//				// 로그인 성공 시, cnt 값 0으로 초기화
+//				int cntReset = memberMapper.loginCntReset(map);
+//				message= "로그인 성공!";
+//				result = "success";
+//				session.setAttribute("sessionId", member.getUserId());
+//				session.setAttribute("sessionName", member.getName());
+//				session.setAttribute("sessionStatus", member.getStatus());
+//				if(member.getStatus().equals("A")) {
+//					resultMap.put("url", "/mgr/member/list.do");
+//				} else {
+//					resultMap.put("url", "/main.do");
+//				}
+//			}
+//			
+//			
+//		} else { //아이디&비밀번호 틀릴 경우
+//			Member loginIdCheck = memberMapper .memberIdCheck(map);
+//			if(loginIdCheck != null) { //아이디는 맞을 경우
+//				//로그인 실패 시, cnt값 증가
+//				int cntUp = memberMapper.loginCntUp(map);
+////				System.out.println(loginIdCheck.getCnt());
+//				result = "fail";
+//				if(loginIdCheck.getCnt()>=5) {
+//					message = "비밀번호를 5회 이상 잘못 입력하셨습니다. \n로그인이 차단됩니다.\n관리자에게 문의해주세요.";
+//					result = "fail";
+//				} else {
+//					message = "비밀번호를 확인해주세요.";
+//					result = "fail";
+//				}
+//				
+//			} else { //아이디가 틀릴 경우
+//				message = "아이디가 존재하지 않습니다.";
+//				result = "fail";
+//			}
+//		}
+/*----------------------------------------------------------------------------------*/
 		
 		
 		resultMap.put("msg", message);
@@ -128,7 +189,18 @@ public class MemberService {
 	
 	public HashMap<String, Object> memberInsert(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+//		내가 한거
+//		String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
+//		map.put("pwd", hashPwd);
+		
+//		샘이 한거
+		String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
+		map.put("hashPwd", hashPwd);
+		
+//		cnt 전에 해시화를 하고, map에 넣어줘야 함
 		int cnt = memberMapper .memberAdd(map);
+		
 		List<Member> profileList = memberMapper.memberProfileList(map);
 		
 		if(cnt<1) {
@@ -171,6 +243,65 @@ public class MemberService {
 		
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> memberAuth(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			// 1. 리턴 타입 member 
+			Member authMember = memberMapper .selectPwdFind(map);
+			if(authMember != null) {
+				resultMap.put("result", "success");
+			} else {
+				resultMap.put("result", "fail");
+			}
+			// 2. 리턴 타입 int
+//			int cnt = memberMapper .selectPwdFind2(map);
+//			if(cnt > 0) {
+//				resultMap.put("result", "success");
+//			} else {
+//				resultMap.put("result", "fail");
+//			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage()); // e에 어떤 오류인지 담겨져 있음 -> 개발자가 오류를 확인하기 위해 사용하는 코드
+		}
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> changePwd(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+//		System.out.println(map);
+//		String message = "";
+		try {
+			Member member = memberMapper.memberIdCheck(map);
+//			System.out.println(member.getPassword());
+			boolean pwdFlg = passwordEncoder.matches((String) map.get("pwd"), member.getPassword());
+			
+			if(pwdFlg) {
+				resultMap.put("result", "fail");
+				resultMap.put("msg", "기존 비밀번호와 같습니다.");
+			} else {
+				String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
+				map.put("hashPwd", hashPwd);
+				int cnt = memberMapper .memberPwdChange(map);
+				resultMap.put("result", "success");
+				resultMap.put("msg", "변경되었습니다.");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			resultMap.put("msg", "오류가 발생했습니다.");
+			System.out.println(e.getMessage()); // e에 어떤 오류인지 담겨져 있음 -> 개발자가 오류를 확인하기 위해 사용하는 코드
+		}
+		
+		return resultMap;
+	}
+	
 	
 	
 }

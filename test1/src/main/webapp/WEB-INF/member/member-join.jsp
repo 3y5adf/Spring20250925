@@ -28,7 +28,7 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        join
+        <!-- join -->
         <div>
             <label>
                 아이디 : 
@@ -44,7 +44,7 @@
         </div>
         <div>
             <label>비밀번호 확인 : <input type="password" v-model="pwd2"></label>
-            <!-- <button @click="fnPwdCheck">확인</button> -->
+            <button @click="fnPwdCheck">확인</button>
             <!-- <span v-if="pwdFlg">○</span>
             <span v-else></span> -->
         </div>
@@ -100,10 +100,14 @@
         </div>
 
         <div>
+            <br>
             {{timer}}
-            <button @click="fnTimer">시작!</button>
-            <input type="text" name="" id="" v-model="pwd">
-            <button @click="fnPwdCheck">비번</button>
+            <button @click="fnTimer">카운트</button>
+            <div>
+                비밀번호 확인용 : 
+                <input type="text" name="" id="" v-model="pwd" disabled>
+            </div>
+            <!-- <button @click="fnPwdCheck">비번</button> -->
         </div>
         <!-- <button @click="fnJoin">회원가입</button> -->
     </div>
@@ -135,7 +139,7 @@
                 phone2 : "",
                 phone3 : "",
                 gender : "M",
-                status : "A",
+                status : "C",
 
                 idFlg : false,
                 pwdFlg : false,
@@ -194,7 +198,7 @@
                     alert("영소문자, 영대문자, 숫자, 특수문자만 사용해주세요.");
                     return;
                 } else {
-                    alert("a");
+                    // alert("a");
                 }
 
                 if(self.pwd.length<6){
@@ -290,13 +294,17 @@
                     return;
                 }
 
-                if(self.pwd != self.pwd2){
-                    alert("비밀번호가 다릅니다.");
-                    self.pwdFlg = false;
+                // if(self.pwd != self.pwd2){
+                //     alert("비밀번호가 다릅니다.");
+                //     self.pwdFlg = false;
+                //     return;
+                // } else {
+                //     alert("확인되었습니다.");
+                //     self.pwdFlg = true;
+                // }
+                if(!self.pwdFlg){
+                    alert("비밀번호 확인을 완료해주세요.");
                     return;
-                } else {
-                    alert("확인되었습니다.");
-                    self.pwdFlg = true;
                 }
 
                 if(self.name==""){
@@ -340,14 +348,15 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
+                        // console.log(data);
                         if(data.result == "success"){
                             alert("가입되었습니다.");
 
-                            var form = new FormData();
-                            form.append( "file1",  $("#file1")[0].files[0] );
-                            form.append( "userId",  data.userId); // 임시 pk
-                            self.upload(form);  
-
+                            // var form = new FormData();
+                            // form.append( "file1",  $("#file1")[0].files[0] );
+                            // form.append( "userId",  data.userId); // 임시 pk
+                            // self.upload(form);  
+                            
                             // location.href="/member/login.do";
                         } else {
                             alert("오류가 발생했습니다.");

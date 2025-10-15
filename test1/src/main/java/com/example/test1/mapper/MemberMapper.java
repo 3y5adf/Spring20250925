@@ -25,4 +25,9 @@ public interface MemberMapper {
 	int loginCntUp(HashMap<String, Object> map);
 	//로그인 실패 카운트 초기화
 	int loginCntReset(HashMap<String, Object> map);
+	//비밀번호 찾기용 회원 조회
+	Member selectPwdFind(HashMap<String, Object> map);
+	int selectPwdFind2(HashMap<String, Object> map);
+	//비밀번호 변경
+	int memberPwdChange(HashMap<String, Object> map);
 }

@@ -6,7 +6,7 @@
 	<select id="memberLogin" parameterType="hashmap" resultType="com.example.test1.model.Member">
 		SELECT *
 		FROM TBL_USER
-		WHERE USERID = #{id} AND PASSWORD = #{pwd}
+		WHERE USERID = #{id} <!--AND PASSWORD = #{pwd} 해시 적용 후 제거-->
 		<!-- #{} 안의 이름과, jsp에서 보낸 파라미터의 이름은 같아야 함 -->
 	</select>
 	<!--<select id="memberLoginPwd" parameterType="hashmap" resultType="com.example.test1.model.Member">
@@ -23,8 +23,8 @@
 	</select>
 	
 	<insert id="memberAdd" parameterType="hashmap">
-		INSERT INTO TBL_USER(USERID, PASSWORD, NAME, ADDRESS, PHONE, GENDER, STATUS, CDATETIME, UDATETIME)
-		VALUES(#{id}, #{pwd}, #{name}, #{addr}, #{phone}, #{gender}, #{status}, SYSDATE, SYSDATE)
+		INSERT INTO TBL_USER(USERID, PASSWORD, NAME, ADDRESS, PHONE, GENDER, STATUS, CDATETIME, UDATETIME, CNT)
+		VALUES(#{id}, #{hashPwd}, #{name}, #{addr}, #{phone}, #{gender}, #{status}, SYSDATE, SYSDATE, 0)
 	</insert>
 	
 	<select id="memberProfileList" parameterType="hashmap" resultType="com.example.test1.model.User">
@@ -58,6 +58,36 @@
 		UPDATE TBL_USER
 		SET 
 			CNT = 0
+		WHERE USERID = #{id}
+	</update>
+	
+	<select id="selectPwdFind" parameterType="hashmap" resultType="com.example.test1.model.Member">
+		SELECT *
+		FROM TBL_USER
+		WHERE 
+			USERID = #{id}
+			AND NAME = #{name}
+			AND REPLACE(PHONE,'-', '') = #{phone}
+			<!--내가 했던 버전. SUBSTR을 써도 되지만, 다른 번호일때 귀찮아질 수 있음-->
+			<!--PHONE = SUBSTR(#{phone},1,3)||'-'||SUBSTR(#{phone},4,4)||'-'||SUBSTR(#{phone},8,4)-->
+	</select>
+	
+	<select id="selectPwdFind2" parameterType="hashmap" resultType="int">
+	<!-- selectPwdFind와 같은 기능이지만, 결과의 수가 1인지 0인지로 판별 -->
+		SELECT COUNT(*)
+		FROM TBL_USER
+		WHERE 
+			USERID = #{id}
+			AND NAME = #{name}
+			AND REPLACE(PHONE,'-', '') = REPLACE(#{phone},'-', '')
+			<!--PHONE = SUBSTR(#{phone},1,3)||'-'||SUBSTR(#{phone},4,4)||'-'||SUBSTR(#{phone},8,4)-->
+			
+	</select>
+	
+	<update id="memberPwdChange" parameterType="hashmap">
+		UPDATE TBL_USER
+		SET 
+			PASSWORD = #{hashPwd}
 		WHERE USERID = #{id}
 	</update>
 </mapper>

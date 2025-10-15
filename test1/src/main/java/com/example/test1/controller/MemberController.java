@@ -1,20 +1,17 @@
 package com.example.test1.controller;
 
-import java.io.File;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.test1.dao.MemberService;
 import com.google.gson.Gson;
@@ -24,6 +21,7 @@ public class MemberController {
 	
 	@Autowired
 	MemberService memberService;
+//	PasswordEncoder passwordEncoder;
 	
 		//controller에서 주소를 만들어주는(할당해주는) 어노테이션
 	@RequestMapping("/member/login.do") 
@@ -62,6 +60,13 @@ public class MemberController {
 	      
 	}
 	
+	@RequestMapping("/member/pwd.do") 
+    public String pwd(Model model) throws Exception{
+
+    return "/member/pwd";
+	      
+	}
+	
 	@RequestMapping(value = "/mgr/member/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String memberMgrList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -76,6 +81,9 @@ public class MemberController {
 	public String memberLogin(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = memberService.login(map);
+//		System.out.println(map);
+//		String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
+//		System.out.println(hashPwd);
 		
 		return new Gson().toJson(resultMap);
 	}
@@ -112,6 +120,24 @@ public class MemberController {
 	public String memberClear(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = memberService.memberRelease(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/member/pwd.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String authMember(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.memberAuth(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/member/pwdChange.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String pwdChange(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.changePwd(map);
 		
 		return new Gson().toJson(resultMap);
 	}
