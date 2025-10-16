@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.test1.mapper.BbsMapper">
+	<select id="selectBbsList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT *
+		FROM TBL_BBS
+		ORDER BY BBS_NUM DESC
+	</select>
+	
+	<insert id="insertBbsImg" parameterType="hashmap">
+		INSERT INTO TBL_BBS_FILE
+		VALUES(BBSFILE_SEQ.NEXTVAL, #{bbsNum}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
+	</insert>
+		
+	<insert id="insertBbs" 
+			parameterType="hashmap"
+			useGeneratedKeys="true" 
+			keyColumn="BBS_NUM" 
+			keyProperty="bbsNum">
+		INSERT INTO TBL_BBS
+		VALUES(BBS_SEQ.NEXTVAL, #{title}, #{contents}, 0, #{id}, SYSDATE, SYSDATE)
+	</insert>
+	
+	<delete id="deleteBbs" parameterType="hashmap">
+		DELETE
+		FROM TBL_BBS
+		WHERE BBS_NUM = #{checkNo}
+	</delete>
+	
+	<delete id="deleteBbsFile" parameterType="hashmap">
+		DELETE
+		FROM TBL_BBS_FILE
+		WHERE BOARDNO = #{checkNo}
+	</delete>
+	
+	<select id="getBbs" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT B.*, TO_CHAR(CDATETIME) CDATE
+		FROM TBL_BBS B
+		WHERE BBS_NUM = #{bbsNum}
+	</select>
+	
+	<select id="getBbsImg" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT *
+		FROM TBL_BBS_FILE
+		WHERE BOARDNO = #{bbsNum}
+	</select>
+	
+	<update id="updateBbs" parameterType="hashmap">
+		UPDATE TBL_BBS 
+		SET
+			TITLE = #{titleInput},
+			CONTENTS = #{userContentsInput},
+			USERID = #{userIdInput}
+		WHERE BBS_NUM = #{bbsNum}
+	</update>
+	
+	<!--<select id="userProfileList" parameterType="hashmap" resultType="com.example.test1.model.User">
+		SELECT *
+		FROM TBL_USER_FILE
+		WHERE USERID = #{userId}
+	</select>-->
+</mapper>
+
+
+
+

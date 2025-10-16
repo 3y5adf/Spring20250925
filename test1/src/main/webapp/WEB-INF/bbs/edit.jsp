@@ -7,9 +7,7 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script> -->
-	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-	<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -23,129 +21,131 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        .contents {
+            width: 300px;
+            height: 100px;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <!-- {{foodInfo}} -->
+        {{bbsNum}}
         <div>
             <table>
                 <tr>
-                    <th>제품명</th>
-                    <td>{{foodInfo.foodName}}</td>
-                </tr>
-                <tr>
-                    <th>가격</th>
-                    <td>{{foodInfo.price}}</td>
-                </tr>
-                <tr>
-                    <th>정보</th>
-                    <td>{{foodInfo.foodInfo}}</td>
-                </tr>
-                <tr>
-                    <th>개수</th>
-                    <td><input type="text" v-model="num"></td>
-                </tr>
-                <tr>
-                    <th>주문하기</th>
-                    <td><button @click="fnPayment"> 주문하기 </button></td>
-                </tr>
-                <tr>
-                    <th>사진</th>
+                    <th>제목</th>
                     <td>
-                        <img :src="foodInfo.filePath" alt="foodInfo.fileName">
+                        <input type="text" v-model="titleInput">
                     </td>
+                </tr>
+                <tr>
+                    <th>글쓴이</th>
+                    <td>
+                        <input type="text" v-model="userIdInput" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <th>날짜</th>
+                    <td>{{bbsInfo.cdate}}</td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td>
+                        <img v-for="item in bbsImgList" :src="item.filePath">
+                        <input type="text" v-model="userContentsInput" class=contents>
+                    </td>
+                </tr>
+                <tr>
+                    <th>조회수</th>
+                    <td>{{bbsInfo.hit}}</td>
                 </tr>
             </table>
         </div>
 
+        <div>
+            <button @click="fnBbsEdit">수정</button>
+        </div>
     </div>
 </body>
 </html>
 
 <script>
-    const userCode = ""; 
-	IMP.init("imp06808578");
     const app = Vue.createApp({
         data() {
             return {
                 // 변수 - (key : value)
-                menuNo : "${menuNo}",
-                foodInfo : {},
-                num : 1,
-
+                bbsNum : "${sessionBbsNum}",
                 sessionId : "${sessionId}",
-
-                imp_uid : "",
-                paid_amount : ""
+                bbsInfo : {},
+                bbsImgList : [],
+                titleInput : "",
+                userIdInput : "",
+                userContentsInput : ""
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnFoodInfo: function () {
+            fnBbsView: function () {
                 let self = this;
                 let param = {
-                    menuNo : self.menuNo
+                    bbsNum : self.bbsNum
                 };
                 $.ajax({
-                    url: "/product/view.dox",
+                    url: "/bbs/view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         console.log(data);
-                        self.foodInfo = data.info;
+                        self.bbsInfo = data.info;
+                        self.titleInput = data.info.title;
+                        self.userIdInput = data.info.userId;
+                        self.userContentsInput = data.info.contents;
                     }
                 });
             },
 
-            fnPayment : function () {
-                let self = this;
-                IMP.request_pay({
-				    pg: "html5_inicis",
-				    pay_method: "card",
-				    merchant_uid: "merchant_" + new Date().getTime(),
-				    name: "self.amount.",
-				    amount: 1 * self.num,
-				    buyer_tel: "010-0000-0000",
-				  }	, function (rsp) { // callback
-			   	      if (rsp.success) {
-			   	        // 결제 성공 시
-						// alert("성공");
-						console.log(rsp);
-                        self.imp_uid = rsp.imp_uid;
-                        self.paid_amount = rsp.paid_amount;
-                        self.fnPayHistory();
-			   	      } else {
-			   	        // 결제 실패 시
-						// alert("실패");
-			   	      }
-		   	  	});
-            },
-
-            fnPayHistory : function () {
+            fnBbsImgView: function () {
                 let self = this;
                 let param = {
-                    uid : self.imp_uid, //imp_uid
-                    id : self.sessionId, // 세션 id
-                    amount : self.num, // 상품 갯수
-                    menuNo : self.menuNo // 상품 번호
+                    bbsNum : self.bbsNum
+                };
+                $.ajax({
+                    url: "/bbs/imgView.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        self.bbsImgList = data.list;
+                    }
+                });
+            },
+
+            fnBbsEdit : function () {
+                let self = this;
+                let param = {
+                    bbsNum : self.bbsNum,
+                    titleInput : self.titleInput,
+                    userIdInput : self.userIdInput,
+                    userContentsInput : self.userContentsInput
                 };
                 console.log(param);
+                
                 $.ajax({
-                    url: "/product/payment.dox",
+                    url: "/bbs/edit.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         console.log(data);
                         if(data.result == "success"){
-                            alert("결제되었습니다.");
+                            alert("수정되었습니다.");
+                            location.href="/bbs/list.do"
                         } else {
                             alert("오류가 발생했습니다.");
                         }
-                        
                     }
                 });
             }
@@ -153,7 +153,8 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnFoodInfo();
+            self.fnBbsView();
+            self.fnBbsImgView();
         }
     });
 

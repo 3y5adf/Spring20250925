@@ -72,6 +72,11 @@
 		WHERE MENU_NO = #{menuNo}
 	</select>
 	
+	<insert id="insertPayHistory" parameterType="hashmap">
+		INSERT INTO PAYMENT_HISTORY
+		VALUES(#{uid}, #{id}, #{amount}, #{menuNo}, SYSDATE)
+	</insert>
+	
 </mapper>
 
 

@@ -101,7 +101,7 @@
 	<!-- 리턴한 mapper 안의 map에 boardNo를 담아서 리턴 -->
 	<!-- select 처럼 resultType 사용 불가 -->
 		INSERT INTO TBL_BOARD
-		VALUES(B_SEQ.NEXTVAL, #{titleInput}, #{contentsInput}, #{userIdInput}, 0, 0, 2, SYSDATE, SYSDATE)
+		VALUES(B_SEQ.NEXTVAL, #{titleInput}, '', #{userIdInput}, 0, 0, 2, SYSDATE, SYSDATE, #{contentsInput})
 	</insert>
 	
 	<select id="selectBoard" parameterType="hashmap" resultType="com.example.test1.model.Board">

@@ -87,6 +87,21 @@ public class ProductService {
 		return resultMap;
 	}
 	
+	public HashMap<String, Object> addPayHistory(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			productMapper.insertPayHistory(map);
+				//오류 나면 catch로 가니 int cnt = 를 생략
+			resultMap.put("result", "success");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		return resultMap;
+	}
+	
 //	public HashMap<String, Object> productSrch(HashMap<String, Object> map) {
 //		// TODO Auto-generated method stub
 //		HashMap<String, Object> resultMap = new HashMap<String, Object>();

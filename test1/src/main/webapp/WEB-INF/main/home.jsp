@@ -31,7 +31,9 @@
         </div>
         <div>
             <a href="/board-list.do"><button>게시판으로 이동</button></a>
+            <a href="/product.do"><button>제품목록으로 이동</button></a>
         </div>
+        <button @click="fnBBS">to bbs</button>
         <button @click="fnLogout">로그아웃</button>
 
     </div>
@@ -63,7 +65,12 @@
                         location.href="/member/login.do";
                     }
                 });
+            },
+
+            fnBBS: function () {
+                location.href="/bbs/list.do"
             }
+            
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

@@ -9,6 +9,9 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
     <!-- <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script> -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
 
     <style>
         table, tr, td, th{
@@ -58,8 +61,9 @@
                 <th>내용</th>
                 <td>
                     <!-- <div id="editor"> -->
-                        <textarea name="" id="" v-model="contentsInput" cols="50" rows="20"></textarea>
+                        <!-- <textarea name="" id="" v-model="contentsInput" cols="50" rows="20"></textarea> -->
                     <!-- </div> -->
+                    <div id="editor"></div>
                 </td>
             </tr>
         </table>
@@ -119,7 +123,7 @@
                         form.append( "file1",  $("#file1")[0].files[0] ); // id가 file1인 것에 첨부된 파일, 1개만 첨부할 것이기 때문에 [0]
                         form.append( "boardNo",  data.boardNo); // 임시 pk=> boardNo 값을 가져왔으니, data.boardNo를 boardNo로
                         self.upload(form);
-                        // location.href="/board-list.do";
+                        location.href="/board-list.do";
                     }
                 })
             },
@@ -147,23 +151,23 @@
             }
 
             // Quill 에디터 초기화
-            // var quill = new Quill('#editor', {
-            //     theme: 'snow',
-            //     modules: {
-            //         toolbar: [
-            //             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            //             ['bold', 'italic', 'underline'],
-            //             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            //             ['link', 'image'],
-            //             ['clean']
-            //         ]
-            //     }
-            // });
+            var quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
 
             // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
-            // quill.on('text-change', function() {
-            //     self.contents = quill.root.innerHTML;
-            // });
+            quill.on('text-change', function() {
+                self.contentsInput = quill.root.innerHTML;
+            });
         }
     });
 

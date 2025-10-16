@@ -12,6 +12,7 @@ public class Board {
 	private String kind;
 	private String cdate;
 	private String contents;
+	private String contents2;
 	private int ccount;
 	
 	private String fileNo;

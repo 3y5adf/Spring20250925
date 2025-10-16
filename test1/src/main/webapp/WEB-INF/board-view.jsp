@@ -60,12 +60,13 @@
                     <td class="contentsTd">
                         <img v-for="item in fileList" :src="item.filePath">
                         <br>
-                        {{info.contents}}
+                        <div v-html="info.contents2"></div>
+                        
                     </td>
                 </tr>
             </table>
         </div>
-        <a href="javascript:;" @click="fnEdit"><button>수정</button></a>
+        <a href="javascript:;" @click="fnEdit" v-if="info.userId === sessionId"><button>수정</button></a>
         <hr>
         <!-- <div class="commentSpace">
             {{commentList}}

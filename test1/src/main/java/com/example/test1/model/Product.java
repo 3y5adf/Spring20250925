@@ -22,6 +22,11 @@ public class Product {
 	private String fileTc;
 	private String thumbnailYN;
 	
-
+	private String orderId;
+	private String userId;
+	private int amount;
+	private String productNo;
+	private String paymentDate;
+	
 
 }
