@@ -13,6 +13,8 @@ public class Bbs {
 	private String cdatetime;
 	private String udatetime;
 	
+//	private int cnt;
+	
 	private String cdate;
 	
 	private int fileNo;

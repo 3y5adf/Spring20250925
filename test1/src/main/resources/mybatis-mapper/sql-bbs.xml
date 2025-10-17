@@ -6,7 +6,18 @@
 	<select id="selectBbsList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
 		SELECT *
 		FROM TBL_BBS
-		ORDER BY BBS_NUM DESC
+		WHERE (TITLE LIKE '%' || #{keyword} || '%'  
+				OR USERID LIKE '%' || #{keyword} || '%')
+		<!--ORDER BY BBS_NUM DESC-->
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="selectBbsListCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) CNT
+		FROM TBL_BBS
+		WHERE (TITLE LIKE '%' || #{keyword} || '%'  
+				OR USERID LIKE '%' || #{keyword} || '%')
+		<!--ORDER BY BBS_NUM DESC-->
 	</select>
 	
 	<insert id="insertBbsImg" parameterType="hashmap">

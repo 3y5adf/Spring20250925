@@ -49,7 +49,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>조회수</th>
+                    <th>추천</th>
                     <td>{{bbsInfo.hit}}</td>
                 </tr>
             </table>

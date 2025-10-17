@@ -21,6 +21,10 @@ public interface MemberMapper {
 	List<Member>memberProfileList(HashMap<String, Object> map);
 	//회원 관리용 리스트 호출
 	List<Member>mgrMemberList(HashMap<String, Object> map);
+	//회원 관리용 리스트 총 명수
+	int mgrMemberListCnt(HashMap<String, Object> map);
+	//회원 관리용 정보
+	Member mgrMemberView(HashMap<String, Object> map);
 	//로그인 실패 카운트 상승
 	int loginCntUp(HashMap<String, Object> map);
 	//로그인 실패 카운트 초기화

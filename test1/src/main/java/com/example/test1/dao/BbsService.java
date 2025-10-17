@@ -22,10 +22,13 @@ public class BbsService {
 	public HashMap<String, Object> bbsList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<Bbs> list = bbsMapper.selectBbsList(map);
 		
 		try {
-
+			List<Bbs> list = bbsMapper.selectBbsList(map);
+			
+			int cnt = bbsMapper.selectBbsListCnt(map);
+			
+			resultMap.put("cnt", cnt);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			

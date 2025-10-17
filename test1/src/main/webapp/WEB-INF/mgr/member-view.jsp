@@ -27,7 +27,38 @@
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         {{userId}}
         <br>
-        id로 db조회해서 화면에 뿌리는거 해보기
+        <div>
+            <table>
+                <tr>
+                    <th>이름</th>
+                    <td>{{mgrMember.name}}</td>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <td>{{mgrMember.userId}}</td>
+                </tr>
+                <tr>
+                    <th>닉네임</th>
+                    <td>{{mgrMember.nickName}}</td>
+                </tr>
+                <tr>
+                    <th>생년월일</th>
+                    <td>{{mgrMember.birth}}</td>
+                </tr>
+                <tr>
+                    <th>성별</th>
+                    <td>{{mgrMember.gender}}</td>
+                </tr>
+                <tr>
+                    <th>등급</th>
+                    <td>{{mgrMember.status}}</td>
+                </tr>
+                <tr>
+                    <th>로그인 실패 횟수</th>
+                    <td>{{mgrMember.cnt}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>
@@ -37,21 +68,25 @@
         data() {
             return {
                 // 변수 - (key : value)
-                userId : "${userId}"
+                userId : "${userId}",
+                mgrMember : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnMgrMemberList: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    id : self.userId
+                };
                 $.ajax({
-                    url: "",
+                    url: "/mgr/member/view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        console.log(data);
+                        self.mgrMember = data.info;
                     }
                 });
             }
@@ -59,6 +94,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnMgrMemberList();
         }
     });
 

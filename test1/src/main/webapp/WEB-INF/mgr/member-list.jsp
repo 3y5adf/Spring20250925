@@ -26,7 +26,13 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        
+        <div>
+            <select v-model="pageSize" @change="fnMgrList">
+                <option value="3">3개씩</option>
+                <option value="5">5개씩</option>
+                <option value="10">10개씩</option>
+            </select>
+        </div>
         <div>
             <table>
                 <tr>
@@ -53,6 +59,14 @@
                 </tr>
             </table>
         </div>
+        
+        <div>
+            <span v-for="num in index" class="num">
+                <a href="javascript:;" @click="fnMove(num)">
+                    {{num}}
+                </a>
+            </span>
+        </div>
 
     </div>
 </body>
@@ -63,14 +77,21 @@
         data() {
             return {
                 // 변수 - (key : value)
-                mgrList : []
+                mgrList : [],
+
+                pageSize : 5, // 한 페이지에 출력할 개수
+                page : 1, //현재 페이지
+                index : 0, // 최대 페이지 값
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnMgrList: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    pageSize : self.pageSize,
+                    page : (self.page-1) * self.pageSize
+                };
                 $.ajax({
                     url: "/mgr/member/list.dox",
                     dataType: "json",
@@ -79,6 +100,7 @@
                     success: function (data) {
                         console.log(data);
                         self.mgrList = data.list;
+                        self.index = Math.ceil(data.cnt / self.pageSize);
                     }
                 });
             },
@@ -108,6 +130,12 @@
             fnView : function (userId) {
                 // /mgr/member/view.do 로 이동
                 pageChange("/mgr/member/view.do", {userId :userId});
+            },
+
+            fnMove : function (num) {
+                let self=this;
+                self.page = num;
+                self.fnMgrList();
             }
         }, // methods
         mounted() {

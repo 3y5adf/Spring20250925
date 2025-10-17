@@ -43,6 +43,22 @@
 				SUBSTR(BIRTH,3,2)||'.'||SUBSTR(BIRTH,5,2)||'.'||SUBSTR(BIRTH,7,2) 
 			) AS UBIRTH
 		FROM TBL_USER U
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="mgrMemberListCnt" parameterType="hashmap" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM TBL_USER U
+		
+	</select>
+	
+	<select id="mgrMemberView" parameterType="hashmap" resultType="com.example.test1.model.Member">
+		SELECT *
+		FROM TBL_USER
+		WHERE 
+			USERID = #{id}
+			
 	</select>
 	
 	<update id="loginCntUp" parameterType="hashmap">

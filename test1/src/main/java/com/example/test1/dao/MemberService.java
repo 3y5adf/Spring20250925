@@ -219,7 +219,25 @@ public class MemberService {
 		
 		try {
 			List<Member> mgrList = memberMapper .mgrMemberList(map);
+			int cnt = memberMapper.mgrMemberListCnt(map);
+			resultMap.put("cnt", cnt);
 			resultMap.put("list", mgrList);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage()); // e에 어떤 오류인지 담겨져 있음 -> 개발자가 오류를 확인하기 위해 사용하는 코드
+		}
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> mgrMemberView(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			Member member = memberMapper .mgrMemberView(map);
+			resultMap.put("info", member);
 			resultMap.put("result", "success");
 		} catch (Exception e) {
 			// TODO: handle exception

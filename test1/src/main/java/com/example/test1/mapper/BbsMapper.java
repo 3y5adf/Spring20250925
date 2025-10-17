@@ -12,6 +12,8 @@ public interface BbsMapper {
 	
 	//목록
 	List<Bbs> selectBbsList(HashMap<String, Object> map);
+	//게시글 전체 개수
+	int selectBbsListCnt(HashMap<String, Object> map);
 	//이미지 업로드
 	int insertBbsImg(HashMap<String, Object> map);
 	//게시글 작성

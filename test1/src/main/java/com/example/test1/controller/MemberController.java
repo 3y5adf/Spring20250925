@@ -142,6 +142,16 @@ public class MemberController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/mgr/member/view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String mgrMemberView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.mgrMemberView(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	
 	//잘 안됐음.
 //	@RequestMapping("/fileUpload.dox")
 //	public String result(@RequestParam("file1") MultipartFile multi, @RequestParam("idx") int idx, HttpServletRequest request,HttpServletResponse response, Model model)
